@@ -6,28 +6,27 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Batiment;
 use App\Entity\Personnes;
+use Faker\Factory;
 
 
 class AddData extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $batimentA = new Batiment();
-        $batimentA->setNom('Batiment A');
-        $batimentA->setAdresse('1 rue de la Paix');
-        $manager->persist($batimentA);
+        $faker = Factory::create('fr_FR');
+        for ($i = 1; $i < 4; $i++) {
+            $batiment = new Batiment();
+            $batiment->setNom($faker->cityPrefix() . ' ' . $faker->citySuffix());
+            $batiment->setAdresse($faker->address());
+            $manager->persist($batiment);
+        }
 
-        $personneJ = new Personnes();
-        $personneJ->setNom('Julius');
-        $personneJ->setPrenom('El Escargot');
-        // $personneJ->setBatiment($batimentA);
-        $manager->persist($personneJ);
-
-        $personneR = new Personnes();
-        $personneR->setNom('Rulius');
-        $personneR->setPrenom('El Escargot');
-        // $personneR->setBatiment($batimentA);
-        $manager->persist($personneR);
+        for ($i = 1; $i < 2; $i++) {
+            $personne = new Personnes();
+            $personne->setNom($faker->lastName());
+            $personne->setPrenom($faker->firstName());
+            $manager->persist($personne);
+        }
 
         $manager->flush();
     }
